@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      let myBlock;
+      let display;
+      let funList = [];
+      const moveArray = ['up', 'down', 'right', 'left'];
+      document.addEventListener('DOMContentLoaded', function () {
+        myBlock = document.createElement('div');
+        myBlock.textContent =
+          'press the R key for a random route and then press the enter or space key';
+        document.body.appendChild(myBlock);
+        myBlock.style.height = '200px';
+        myBlock.style.width = '200px';
+        myBlock.style.backgroundColor = 'red';
+        myBlock.style.color = 'white';
+        myBlock.style.lineHeight = '50px';
+        myBlock.style.textAlign = 'center';
+        myBlock.style.position = 'absolute';
+        myBlock.style.top = '300px';
+        myBlock.style.left = '800px';
+        display = document.createElement('div');
+        document.body.appendChild(display);
+      });
+
+      document.addEventListener('keydown', function (e) {
+        e.preventDefault();
+        let key = e.keyCode;
+        console.log(key);
+        if (key === 37) {
+          addFun('left');
+        } else if (key === 38) {
+          addFun('up');
+        } else if (key === 39) {
+          addFun('right');
+        } else if (key === 40) {
+          addFun('down');
+        } else if (key === 67) {
+          myBlock.style.backgroundColor = randomColor();
+        } else if (key === 13 || key === 32) {
+          mover();
+        } else if (key === 82) {
+          let t = moveArray[Math.floor(Math.random() * moveArray.length)];
+          addFun(t);
+        }
+      });
+
+      function mover() {
+        if (funList.length > 0) {
+          let cur = myBlock.getBoundingClientRect();
+          let el = funList.shift();
+          let text = el.textContent.replace('+', '');
+          display.removeChild(el);
+          myBlock.innerHTML = 'Move:' + text;
+          if (text == 'left') {
+            myBlock.style.left = cur.left - cur.width + 'px';
+          }
+          if (text == 'right') {
+            myBlock.style.left = cur.left + cur.width + 'px';
+          }
+          if (text == 'up') {
+            myBlock.style.top = cur.top - cur.height + 'px';
+          }
+          if (text == 'down') {
+            myBlock.style.top = cur.top + cur.height + 'px';
+          }
+          setTimeout(mover, 900);
+        } else {
+          myBlock.innerHTML = 'done';
+          return;
+        }
+      }
+
+      function addFun(val) {
+        let span = document.createElement('span');
+        span.textContent = '+' + val;
+        span.style.padding = '10px';
+        span.style.border = '1px solid #ddd';
+        display.appendChild(span);
+        funList.push(span);
+        span.addEventListener('mouseover', function () {
+          this.style.backgroundColor = 'red';
+          this.style.color = 'white';
+        });
+        span.addEventListener('mouseout', function () {
+          this.style.backgroundColor = 'white';
+          this.style.color = 'black';
+        });
+        span.addEventListener('click', function () {
+          let curIndex = funList.indexOf(this);
+          let tempRemove = funList.splice(curIndex, 1);
+          display.removeChild(this);
+        });
+      }
+
+      function randomColor() {
+        return '#' + Math.random().toString(16).substr(-6);
+      }
+
+      function goLeft() {
+        let temp = myBlock.offsetLeft;
+        temp = temp - 50;
+        myBlock.style.left = temp + 'px';
+      }
+
+      function goRight() {
+        let temp = myBlock.offsetLeft;
+        temp = temp + 50;
+        myBlock.style.left = temp + 'px';
+      }
+
+      function goUp() {
+        let temp = myBlock.offsetTop;
+        temp = temp - 50;
+        myBlock.style.top = temp + 'px';
+      }
+
+      function goDown() {
+        let temp = myBlock.offsetTop;
+        temp = temp + 50;
+        myBlock.style.top = temp + 'px';
+      }
+    </script>
+  </body>
+</html>
